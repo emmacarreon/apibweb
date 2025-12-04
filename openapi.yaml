@@ -1,0 +1,1053 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0-oas3.1
+  title: VStour - API del brazoWEB
+  description: >-
+    - VStour es un sistema de gestión específico para agencias de viaje. Incluye
+    las tareas y procesos desde que se inicia el registro de la venta, la
+    operación y todo lo que sea administrativo hasta incluso la contabilidad.
+
+    - brazoWeb es un subsistema de autogestión web que permite ver la lista de
+    facturas, descargarlas, ver la cuenta corriente y las operaciones a los
+    clientes de la agencia que usa VStour.
+
+    - cada cliente puede tener uno o mas contactos a los que se les puede dar
+    acceso al brazoWeb. Por la lógica del sistema cada contacto solo ve las
+    operaciones de ese cliente.
+
+    - puede existir el caso en que un vendedor de la agencia actue en forma
+    independiente siendo entonces un cliente de la agencia y a su vez le venda a
+    terceros. VStour le permite almacenar esos terceros como clientes de si
+    mismo.  
+tags:
+  - name: third-Parties
+    description: para revendedores, sus clientes
+  - name: passengers
+    description: los pasajeros asociados al usuario del cliente logueado
+  - name: files
+    description: los expedientes
+  - name: accounts
+    description: la cuenta corriente del cliente logueado
+  - name: invoices
+    description: la lista de facturas en pdf para descargar
+  - name: parameters
+    description: los parámetros generales (países, provincias, etc.)
+  - name: user
+    description: la autenticación y sus datos asociados
+paths:
+  /third-Parties:
+    get:
+      tags:
+        - third-Parties
+      summary: obtiene una lista de los clientes activos del logueado
+      operationId: thirdPartiesList
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/THIRDPARTIES'
+        '400':
+          description: bad request
+        '404':
+          description: third-Parties not found
+
+
+
+  /third-Parties/{thirdPartiesId}:
+    get:
+      tags:
+        - third-Parties
+      summary: obtiene los datos de un cliente por el ID
+      description: devuelve los datos de un cliente
+      operationId: getThirdPartiesById
+      parameters:
+        - name: thirdPartiesId
+          in: path
+          description: ID del cliente a devolver
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/THIRDPARTIES'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: third-Parties not found
+    post:
+      tags:
+        - third-Parties
+      summary: agrega un nuevo cliente y devuelve el objeto creado
+      operationId: postThirdPartiesById
+      parameters:
+        - name: thirdPartiesId
+          in: path
+          description: ID del cliente a devolver
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/THIRDPARTIES'
+      responses:
+        '200':
+          description: Operación exitosa
+    put:
+      tags:
+        - third-Parties
+      summary: modifica un registro completo
+      parameters:
+        - name: thirdPartiesId
+          in: path
+          description: ID del cliente a devolver
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/THIRDPARTIES'
+      responses:
+        '200':
+          description: Operación exitosa
+    patch:
+      tags:
+        - third-Parties
+      summary: modifica parcialmente un registro
+      parameters:
+        - name: thirdPartiesId
+          in: path
+          description: ID del cliente a devolver
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/THIRDPARTIES'
+      responses:
+        '200':
+          description: Operación exitosa
+    delete:
+      tags:
+        - third-Parties
+      summary: desactiva el cliente del logueado y lo pone como no activo
+      parameters:
+        - name: thirdPartiesId
+          in: path
+          description: ID del cliente a devolver
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operación exitosa
+        '400':
+          description: Ha ocurrido al eliminar
+  /passengers/{ClientId}:
+    get:
+      tags:
+        - passengers
+      summary: Obtiene la lista de pasajeros asociados al usuario del cliente logueado
+      description: devuelve los datos de un cliente
+      operationId: getPassengersByClient
+      parameters:
+        - name: ClientId
+          in: path
+          description: ID del cliente a devolver
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PASSENGERS'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Passengers not found
+  /files:
+    get:
+      tags:
+        - files
+      summary: Obtiene la lista de expedientes
+      operationId: files
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FILES'
+        '400':
+          description: bad request
+        '404':
+          description: files not found
+  /accounts:
+    get:
+      tags:
+        - accounts
+      summary: Obtiene la cuenta corriente del cliente logueado
+      operationId: accountsCta
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ACCOUNTS'
+        '400':
+          description: bad request
+        '404':
+          description: Accounts not found
+  /invoices:
+    get:
+      tags:
+        - invoices
+      summary: Obtiene la lista de facturas en pdf para descargar
+  /parameters:
+    get:
+      tags:
+        - parameters
+      summary: Obtiene los parámetros generales (países, provincias, etc.)
+  /user:
+    get:
+      tags:
+        - user
+      summary: Obtiene datos asociados al usuario autenticado
+      operationId: userData
+      security:
+        - BearerAuth:  []
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description : Unauthorized (Token is missing or invalid)
+        '400':
+          description: Invalid Request
+        '404':
+          description: user not found
+  /user/login:
+    get:
+      tags:
+        - user
+      summary: Logs user into the system
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+  /user/logout:
+    get:
+      tags:
+        - user
+      summary: Logs out current logged in user session
+      operationId: logoutUser
+      responses:
+        default:
+          description: successful operation
+  /user/{username}:
+    get:
+      tags:
+        - user
+      summary: Get user by user name
+      operationId: getUserByName
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be fetched. Use user1 for testing.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+    put:
+      tags:
+        - user
+      summary: Updated user
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+        - name: username
+          in: path
+          description: name that need to be updated
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        description: Updated user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '400':
+          description: Invalid user supplied
+        '404':
+          description: User not found
+    delete:
+      tags:
+        - user
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be deleted
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+components:
+  schemas:
+    CLIENTS:
+      type: object
+      properties:
+        clientId:
+          type: string
+          description: CODIGO DE CLIENTE
+          examples:
+            - '00054'
+        name:
+          type: string
+          description: NOMBRE
+          examples:
+            - BAGO
+        formalName:
+          type: string
+          description: Razon social
+          examples:
+            - "Laboratorios BAGO S.A."
+        address:
+          type: string
+          description: DIRECCION
+          examples:
+            - "Av.Delepiane 5433"
+        address1:
+          type: string
+          description: Adicional direccion
+        postalCode:
+          type: string
+          description: CODIGO POSTAL
+          examples:
+            - "1566"
+        place:
+          type: string
+          description: LOCALIDAD
+          examples:
+            - "Buenos Aires"
+        estate:
+          type: string
+          description: CODIGO DE PROVINCIA
+          examples:
+            - "Capital Federal"
+        country:
+          type: string
+          description: CODIGO DE PAIS
+          examples:
+            - "Argentina"
+        telephone:
+          type: string
+          description: TELEFONO
+          examples:
+            - "+541147889988"
+        languaje:
+          type: string
+          description: Idioma del cliente
+          examples:
+            - "SPN"
+        fax:
+          type: string
+          description: NUMERO DE FAX
+          examples:
+            - "+541147889955"
+        email:
+          type: string
+          description: Direccion E-Mail
+          examples:
+            - "info@bago.com.ar"
+        webPage:
+          type: string
+          description: Web Page del Cliente
+          examples:
+            - "www.bago.com.ar"
+        vatType:
+          type: string
+          description: CONDICION DE IVA
+          examples:
+            - "RI"
+        vat:
+          type: string
+          description: NUMERO DE GANANCIAS
+          examples:
+            - "3012345678"
+        clientType:
+          type: string
+          description: TIPO DE CLIENTE
+          examples:
+            - "EMP"
+        salesman:
+          type: string
+          description: CODIGO DE VENDEDOR
+          examples:
+            - "EGV"
+        lastFile:
+          type: string
+          description: ULTIMO NUMERO DE EXP
+          examples:
+            - "AB776"
+        lastDateOperation:
+          type: string
+          format: AAAAMMDD
+          description: FECHA ULTIMA OPERACI
+          examples:
+            - "20230812"
+        lastPassenger:
+          type: string
+          description: ULTIMO PASAJERO
+          examples:
+            - "00012"
+        comments:
+          type: string
+          description: OBSERVACIONES
+          examples:
+            - "sub cliente"
+        Credit:
+          type: boolean
+          description: AUTORIZA CREDITO
+          examples:
+            - true
+        CreditLimit:
+          type: number
+          format: double
+          description: LIMITE DE CREDITO
+          examples:
+            - 30000
+        CrediPercentageUsed:
+          type: number
+          format: double
+          description: Lte credito usado
+          examples:
+            - 20
+        promoter:
+          type: string
+          description: PROMOTOR/AGENTE GRAL
+          examples:
+            - "EGV"
+        notes:
+          type: string
+          description: Notas del Cliente
+          examples:
+            - "Transferencias bancarias"
+        nacionality:
+          type: string
+          description: NACIONALIDAD
+          examples:
+            - "ARG"
+        documentType:
+          type: string
+          description: TIPO DE DOCUMENTO
+          examples:
+            - "CUI"
+        externalKey:
+          type: string
+          description: External Key
+        logoUri:
+          type: string
+          description: Logo del cliente
+          examples:
+            - "bago/logochico.jpg"
+        emailInvoice:
+          type: string
+          description: Mail Fact Electronic
+          examples:
+            - "juana@bago.com.ar"
+        clientIdRelated:
+          type: string
+          description: Cliente relacionado    
+    CONTACTS:
+      type: object
+      properties:
+        userid:
+          type: string
+          description: Codigo de contacto
+        lastName:
+          type: string
+          description: Apellido
+        Name:
+          type: string
+          description: Nombre
+        fullName:
+          type: string
+          description: Apell+Nombre p/CDX
+        address:
+          type: string
+          description: Domicilio
+        telephone:
+          type: string
+          description: Telefono
+        email:
+          type: string
+          description: e-mail
+        postalCode:
+          type: string
+          description: Codigo postal
+        place:
+          type: string
+          description: Localidad
+        estate:
+          type: string
+          description: Codigo de Provincia
+        country:
+          type: string
+          description: Codigo de Pais
+        birth:
+          type: string
+          format: AAAAMMDD
+          description: Fecha de nacimiento
+        idDocumentType:
+          type: string
+          description: Codigo de documento
+        idDocumentNumber:
+          type: string
+          description: Numero de documento
+        comments:
+          type: string
+          description: Observaciones
+        nacionality:
+          type: string
+          description: Nacionalidad
+        sex:
+          type: string
+          description: Sexo
+        notes:
+          type: boolean
+          description: Notas
+        externalKey:
+          type: string
+          description: External Key
+        language:
+          type: string
+          description: Lenguaje
+        nickName:
+          type: string
+          description: Nick name web
+        defaultOffice:
+          type: string
+          description: Sucursal x default
+        profile:
+          type: boolean
+          description: Perfil del Contacto
+        hasVStour:
+          type: boolean
+          description: Es Usuario de Vstour
+        userVStour:
+          type: string
+          description: Usuario de Vstour
+        position:
+          type: string
+          description: Cargo en Cliente
+          examples:
+            - "Jefe de ventas"
+        associatedSalesman:
+          type: string
+          description: Vendedor asociado
+          examples:
+            - "EGV"
+        webAttributes:
+          type: boolean
+          description: Atributos WEB
+    ACCOUNTS:
+      type: object
+      properties:
+        clientID:
+          type: string
+          description: CLIENTE
+        fileNumber:
+          type: string
+          description: EXPEDIENTE
+        paxID:
+          type: string
+          description: Codigo de pasajero
+        transactionDate:
+          type: string
+          format: AAAAMMDD
+          description: FECHA
+        accountType:
+          type: string
+          description: CONTABILIDAD
+        transactionType:
+          type: string
+          description: TIPO DE COMPROBANTE
+        transactionCode:
+          type: string
+          description: COMPROBANTE
+        transactionNumber:
+          type: string
+          description: NUMERO DE COMPROBANT
+        transactiondue:
+          type: string
+          format: AAAAMMDD
+          description: VENCIMIENTO
+        transactionAmount:
+          type: number
+          format: double
+          description: IMPORTE
+        transactionPending:
+          type: number
+          format: double
+          description: Importe Actual
+        transactionLocalPending:
+          type: number
+          format: double
+          description: Importe Mnd Local
+        transactionComments:
+          type: string
+          description: OBSERVACIONES
+        transactionForm:
+          type: string
+          description: LETRA FAC.LEGAL
+        transactionBranch:
+          type: string
+          description: SUC.  FAC.LEGAL
+        transactionFormNumbe:
+          type: string
+          description: NRO.  FAC.LEGAL
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        entityId:
+          type: number
+        entityName:
+          type: string
+    THIRDPARTIES:
+      type: object
+      properties:
+        client:
+          $ref: '#/components/schemas/CLIENTS'
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CONTACTS'
+      required:
+        - client
+    PASSENGER:
+      type: object
+      properties:
+        paxCustomerCode:
+          type: string
+          description: CLIENTE
+          examples:
+            - '00054'
+        paxCode:
+          type: string
+          description: PASAJERO
+          examples:
+            - 'empty'
+        paxLastName:
+          type: string
+          description: APELLIDO
+          examples:
+            - 'Perez'
+        paxFirstName:
+          type: string
+          description: NOMBRE
+          examples:
+            - 'Juan'
+        paxName:
+          type: string
+          description: APPELIDO Y NOMBRE
+          examples:
+            - ''
+        paxAdress:
+          type: string
+          description: DOMICILIO
+          examples:
+            - 'Corrientes 2300'
+        paxPhone:
+          type: string
+          description: TELEFONO
+          examples:
+            - '2215112809'
+        paxEmail:
+          type: string
+          description: EMAIL
+          examples:
+            - 'juan@gmail.com'
+        zipCode:
+          type: string
+          description: PASAJERO
+          examples:
+            - 'empty'
+        paxCity:
+          type: string
+          description: LOCALIDAD
+          examples:
+            - 'CABA'
+        stateCode:
+          type: string
+          description: CODIGO DE PROVINCIA
+          examples:
+            - '123'
+        countryCode:
+          type: string
+          description: CODIGO DE PAIS
+          examples:
+            - '345'
+        paxType:
+          type: string
+          description: TIPO
+          examples:
+            - ''
+        paxSpecialService:
+          type: string
+          description: SERVICIOS ESPECIALES
+          examples:
+            - 'empty'
+        paxBirthDate:
+          type: string
+          description: NACIMIENTO
+          examples:
+            - 'empty'
+        paxAniversaryDate:
+          type: string
+          description: FECHA DE ANIVERSARIO
+          examples:
+            - 'empty'
+        paxDocument:
+          type: string
+          description: DOCUMENTO
+          examples:
+            - 'empty'
+        paxDocumentNumber:
+          type: string
+          description: NUMERO DE DOCUMENTO
+          examples:
+            - 'empty'
+        paxCountryDocument:
+          type: string
+          description: PAIS EMISOR DE DOCUMENTO
+          examples:
+            - 'empty'
+        paxSecondDocument:
+          type: string
+          description: 2DO DOCUMENTO
+          examples:
+            - 'empty'
+        paxSecondDocumentNro:
+          type: string
+          description: 2DO NRO DOCUMENTO
+          examples:
+            - 'empty'
+        paxCountrySecondDocument:
+          type: string
+          description: 2DO NRO DOCUMENTO
+          examples:
+            - 'empty'
+        paxPassportExpiration2:
+          type: string
+          description: VENCIMIENTO DE PASAPORTE 2
+          examples:
+            - 'empty'
+        paxObservations:
+          type: string
+          description: OBSERVACIONES
+          examples:
+            - 'empty'
+        paxPassportExpiration:
+          type: string
+          description: VENCIMIENTO DE PASAPORTE
+          examples:
+            - 'empty'
+        paxExpirationVisaUsa:
+          type: string
+          description: VENCIMIENTO VISA USA
+          examples:
+            - 'empty'
+        paxGroup:
+          type: string
+          description: GRUPO
+          examples:
+            - 'empty'
+        paxNacionality:
+          type: string
+          description: NACIONALIDAD
+          examples:
+            - 'empty'
+        paxOccupation:
+          type: string
+          description: OCUPACION
+          examples:
+            - 'empty'
+        paxSex:
+          type: string
+          description: SEXO
+          examples:
+            - 'empty'
+        paxNotes:
+          type: string
+          description: NOTAS DEL PASAJERO
+          examples:
+            - 'empty'
+        paxFrequent:
+          type: string
+          description: PASAJERO FRECUENTE
+          examples:
+            - 'empty'
+        paxMemberNumber:
+          type: string
+          description: NUMERO DE SOCIO
+          examples:
+            - 'empty'
+        employeeCode:
+          type: string
+          description: NRO EMPLEADO CORP
+          examples:
+            - 'empty'
+        centerCosts:
+          type: string
+          description: CENTRO DE COSTOS CORP
+          examples:
+            - 'empty'
+        countryResident:
+          type: string
+          description: PAIS RESIDENCIA
+          examples:
+            - 'empty'
+        paxNotActive:
+          type: string
+          description: PAX NO ACTIVO
+          examples:
+            - 'empty'
+        paxExtra:
+          type: string
+          description: EXTRAS
+          examples:
+            - 'empty'
+        paxRelax:
+          type: string
+          description: RELACION CLIENTE-PAX
+          examples:
+            - 'empty'
+        paxRelaVal:
+          type: string
+          description: VALIDACION RELACION
+          examples:
+            - 'empty'
+    PASSENGERS:
+      type: object
+      properties:
+        passengersList:
+          type: array
+          items:
+            $ref: '#/components/schemas/PASSENGER'
+    FILES:
+      type: object
+      properties:
+        ExpNro:
+          type: string
+          description: EXPEDIENTE
+          examples:
+            - '00054'
+        nomBen:
+          type: string
+          description: Beneficiarios
+          examples:
+            - 'fdf'
+        expStcli:
+          type: string
+          description: STATUS DEL CLIENTE
+          examples:
+            - ''
+        fchSal:
+          type: string
+          format: date-time
+          description: INI SERVICIOS
+          examples:
+            - 2023-10-25T10:00:00Z
+        fchFin:
+          type: string
+          format: date-time
+          description: FIN SERVICIOS
+          examples:
+            - 2024-10-25T10:00:00Z
+        expObs:
+          type: string
+          description: OBSERVACIONES
+          examples:
+            - 'Empty'
+        expMnd:
+          type: string
+          description: MONEDA
+          examples:
+            - 'Empty'
+        xpvTtot:
+          type: number
+          description: VENTA TOTAL
+          examples:
+            - 1234
+        sdoCta:
+          type: number
+          description: SALDO CTA. CORRIENTE
+          examples:
+            - 1234
+        fileCli:
+          type: string
+          description: FILE DEL CLIENTE
+          examples:
+            - '1234'
+        tarjeta:
+          type: number
+          description: TARJETA
+          examples:
+            - 1234
+        xtotCob:
+          type: number
+          description: Tot.Cob.en Mnd Exp
+          examples:
+            - 1234
+        expFch:
+          type: string
+          format: date-time
+          description: FECHA
+          examples:
+            - 2023-10-25T10:00:00Z
+        expDst:
+          type: string
+          description: DESTINO
+          examples:
+            - 'Destino'
+        canMay:
+          type: number
+          description: Cant.Pax mayores
+          examples:
+            - 1234
+        canMen:
+          type: number
+          description: Cant.Pax menores
+          examples:
+            - 1234
+        canInf:
+          type: number
+          description: Cant.Pax infoa
+          examples:
+            - 1234
+        stcLiva:
+          type: string
+          description: STATUS DEL CLIENTE
+          examples:
+            - 'empty'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
