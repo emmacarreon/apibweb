@@ -239,6 +239,21 @@ paths:
       tags:
         - invoices
       summary: Obtiene la lista de facturas en pdf para descargar
+      operationId: invoicesId
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/INVOICES'
+        '400':
+          description: bad request
+        '404':
+          description: Accounts not found
+
   /parameters:
     get:
       tags:
@@ -398,6 +413,111 @@ paths:
           description: User not found
 components:
   schemas:
+    INVOICES:
+      type: object
+      properties:
+        sfcCod:
+          type: string
+          description: COMPROBANTE
+          examples:
+            - 'COMPROBANTE'
+        sfcNro:
+          type: string
+          description: NUMERO DE COMPROBANTE
+          examples:
+            - 'NUMERO DE COMPROBANTE'
+        proCod:
+          type: string
+          description: CODIGO DE PROVEEDOR
+          examples:
+            - 'CODIGO DE PROVEEDOR'
+        cliCod:
+          type: string
+          description: CODIGO DE CLIENTE
+          examples:
+            - 'CODIGO DE CLIENTE'
+        cliFac:
+          type: string
+          description: CLIENTE A FACTURAR
+          examples:
+            - 'CLIENTE A FACTURAR'
+        expNro:
+          type: string
+          description: NUMERO DE EXPEDIENTE
+          examples:
+            - 'NUMERO DE EXPEDIENTE'
+        paxNro:
+          type: string
+          description: CODIGO DE PASAJERO
+          examples:
+            - 'CODIGO DE PASAJERO'
+        sfcNom:
+          type: string
+          description: NOMBRE DE DESTINATARIO
+          examples:
+            - 'JUAN'
+        sfcDir:
+          type: string
+          description: DIRECCION
+          examples:
+            - 'JUAN'
+        sfcCp:
+          type: string
+          description: CODIGO POSTAL
+          examples:
+            - 'C.P'
+        sfcLoc:
+          type: string
+          description: LOCALIDAD
+          examples:
+            - 'LOCALIDAD'
+        sfcPrv:
+          type: string
+          description: PROVINCIA
+          examples:
+            - 'PROVINCIA'
+        sfcPai:
+          type: string
+          description: País
+          examples:
+            - 'PAÍS'
+        sfcDoc:
+          type: string
+          description: CÓDIGO DE DOCUMENTO
+          examples:
+            - 'CÓDIGO DE DOCUMENTO'
+        sfcGan:
+          type: string
+          description: Nro de cuit
+          examples:
+            - 'Nro de cuit'
+        sfcFch:
+          type: string
+          format: date-time
+          description: FECHA DE FACTURA
+          examples:
+            - 2023-10-25T10:00:00Z
+        sfcVto:
+          type: string
+          format: date-time
+          description: FECHA DE VENCIMIENTO
+          examples:
+            - 2023-10-25T10:00:00Z
+        conTpo:
+          type: string
+          description: CODIGO DE CONTABILIDAD
+          examples:
+            - 'CODIGO DE CONTABILIDAD'
+        sfcCmb:
+          type: number
+          description: CAMBIO A PESOS
+          examples:
+            - 'CAMBIO A PESOS'
+        sfcImp:
+          type: number
+          description: IMPORTE A PAGAR CTA. CTE.
+          examples:
+            - 'IMPORTE A PAGAR CTA. CTE.'
     CLIENTS:
       type: object
       properties:
