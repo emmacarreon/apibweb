@@ -62,6 +62,9 @@ paths:
       tags:
         - third-Parties
       summary: obtiene los datos de un cliente por el ID
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
       description: devuelve los datos de un cliente
       operationId: getThirdPartiesById
       parameters:
@@ -88,6 +91,9 @@ paths:
       tags:
         - third-Parties
       summary: agrega un nuevo cliente y devuelve el objeto creado
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
       operationId: postThirdPartiesById
       parameters:
         - name: thirdPartiesId
@@ -111,6 +117,9 @@ paths:
       tags:
         - third-Parties
       summary: modifica un registro completo
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
       parameters:
         - name: thirdPartiesId
           in: path
@@ -133,6 +142,9 @@ paths:
       tags:
         - third-Parties
       summary: modifica parcialmente un registro
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
       parameters:
         - name: thirdPartiesId
           in: path
@@ -155,6 +167,9 @@ paths:
       tags:
         - third-Parties
       summary: desactiva el cliente del logueado y lo pone como no activo
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
       parameters:
         - name: thirdPartiesId
           in: path
@@ -174,6 +189,9 @@ paths:
       tags:
         - passengers
       summary: Obtiene la lista de pasajeros asociados al usuario del cliente logueado
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
       description: devuelve los datos de un cliente
       operationId: getPassengersByClient
       parameters:
@@ -201,6 +219,9 @@ paths:
       tags:
         - files
       summary: Obtiene la lista de expedientes
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
       operationId: files
       responses:
         '200':
@@ -220,6 +241,9 @@ paths:
       tags:
         - accounts
       summary: Obtiene la cuenta corriente del cliente logueado
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
       operationId: accountsCta
       responses:
         '200':
@@ -239,6 +263,9 @@ paths:
       tags:
         - invoices
       summary: Obtiene la lista de facturas en pdf para descargar
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
       operationId: invoicesId
       responses:
         '200':
@@ -259,14 +286,18 @@ paths:
       tags:
         - parameters
       summary: Obtiene los parámetros generales (países, provincias, etc.)
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
   /user:
     get:
       tags:
         - user
       summary: Obtiene datos asociados al usuario autenticado
-      operationId: userData
       security:
-        - BearerAuth:  []
+        - ApiKeyAuth: []
+        - BearerAuth: []
+      operationId: userData
       responses:
         '200':
           description: successful operation
@@ -285,6 +316,8 @@ paths:
       tags:
         - user
       summary: Logs user into the system
+      security:
+        - ApiKeyAuth: []
       operationId: loginUser
       parameters:
         - name: username
@@ -331,6 +364,9 @@ paths:
       tags:
         - user
       summary: Logs out current logged in user session
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
       operationId: logoutUser
       responses:
         default:
@@ -340,6 +376,9 @@ paths:
       tags:
         - user
       summary: Get user by user name
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
       operationId: getUserByName
       parameters:
         - name: username
@@ -368,6 +407,9 @@ paths:
       tags:
         - user
       summary: Updated user
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
       description: This can only be done by the logged in user.
       operationId: updateUser
       parameters:
@@ -395,6 +437,9 @@ paths:
       tags:
         - user
       summary: Delete user
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
       description: This can only be done by the logged in user.
       operationId: deleteUser
       parameters:
@@ -1167,7 +1212,15 @@ components:
           examples:
             - 'empty'
   securitySchemes:
+  # 1. Definición de la API Key (el clicod)
+    ApiKeyAuth:
+      type: apiKey # Indica que es una clave estática
+      in: header   # Indica que debe ir en el Header de la solicitud
+      name: apikey # Nombre del Header que debe contener la clave
+      description: La clave API que contiene el identificador del cliente (clicod).
+   # 2. Definición del Token (contiene el contacto logueado)
     BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+      type: http       # Es un esquema de autenticación HTTP
+      scheme: bearer   # El tipo de esquema es Bearer (el estándar para tokens)
+      bearerFormat: NoCaduca # (Opcional) Nota para indicar que no tiene vencimiento
+      description: Token devuelto en el login que identifica al contacto logueado.
