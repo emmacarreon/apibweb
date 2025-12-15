@@ -19,6 +19,8 @@ info:
     independiente siendo entonces un cliente de la agencia y a su vez le venda a
     terceros. VStour le permite almacenar esos terceros como clientes de si
     mismo.  
+
+    Agregando texto al openapi
 tags:
   - name: third-Parties
     description: para revendedores, sus clientes
