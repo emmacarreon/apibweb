@@ -1,6 +1,6 @@
 # 📖 Documentación de la API VStour - Brazo Web
 
-Este repositorio contiene la especificación de la API Brazo Web en formato **OpenAPI (Swagger)**.
+Este repositorio contiene la especificación de la API Brazo Web en formato **OpenAPI 3.0 (Swagger)**.
 
 La especificación define todos los endpoints, modelos de datos, y los esquemas de seguridad (API Key y Token) necesarios para interactuar con la plataforma VStour.
 
