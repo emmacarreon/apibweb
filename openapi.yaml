@@ -20,7 +20,7 @@ info:
     terceros. VStour le permite almacenar esos terceros como clientes de si
     mismo.  
 
-    Agregando texto al openapi
+    Agregando texto al openapi. Agrego más texto
 tags:
   - name: third-Parties
     description: para revendedores, sus clientes
