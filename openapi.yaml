@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  version: 2.0.0-oas3.1
+  version: 1.0.0
   title: VStour - API del brazoWEB
   description: >-
     - VStour es un sistema de gestión específico para agencias de viaje. Incluye
@@ -30,8 +30,6 @@ tags:
     description: la cuenta corriente del cliente logueado
   - name: invoices
     description: la lista de facturas en pdf para descargar
-  - name: parameters
-    description: los parámetros generales (países, provincias, etc.)
   - name: user
     description: la autenticación y sus datos asociados
 paths:
@@ -54,8 +52,6 @@ paths:
           description: bad request
         '404':
           description: third-Parties not found
-
-
 
   /third-Parties/{thirdPartiesId}:
     get:
@@ -113,10 +109,13 @@ paths:
       responses:
         '200':
           description: Operación exitosa
+        '400':
+          description: Invalid request
     put:
       tags:
         - third-Parties
       summary: modifica un registro completo
+      operationId: putThirdPartiesById
       security:
         - ApiKeyAuth: []
         - BearerAuth: []
@@ -138,10 +137,13 @@ paths:
       responses:
         '200':
           description: Operación exitosa
+        '400':
+          description: Invalid request
     patch:
       tags:
         - third-Parties
       summary: modifica parcialmente un registro
+      operationId: patchThirdPartiesById
       security:
         - ApiKeyAuth: []
         - BearerAuth: []
@@ -163,10 +165,13 @@ paths:
       responses:
         '200':
           description: Operación exitosa
+        '400':
+          description: Invalid request
     delete:
       tags:
         - third-Parties
       summary: desactiva el cliente del logueado y lo pone como no activo
+      operationId: deleteThirdPartiesById
       security:
         - ApiKeyAuth: []
         - BearerAuth: []
@@ -184,6 +189,8 @@ paths:
           description: Operación exitosa
         '400':
           description: Ha ocurrido al eliminar
+        '404':
+          description: third-Parties not found
   /passengers/{ClientId}:
     get:
       tags:
@@ -280,15 +287,6 @@ paths:
           description: bad request
         '404':
           description: Accounts not found
-
-  /parameters:
-    get:
-      tags:
-        - parameters
-      summary: Obtiene los parámetros generales (países, provincias, etc.)
-      security:
-        - ApiKeyAuth: []
-        - BearerAuth: []
   /user:
     get:
       tags:
@@ -429,6 +427,8 @@ paths:
               $ref: '#/components/schemas/User'
         required: true
       responses:
+        '200':
+          description: successful operation
         '400':
           description: Invalid user supplied
         '404':
@@ -452,6 +452,8 @@ paths:
           schema:
             type: string
       responses:
+        '200':
+          description: successful operation
         '400':
           description: Invalid username supplied
         '404':
@@ -557,12 +559,12 @@ components:
           type: number
           description: CAMBIO A PESOS
           examples:
-            - 'CAMBIO A PESOS'
+            - 350.50
         sfcImp:
           type: number
           description: IMPORTE A PAGAR CTA. CTE.
           examples:
-            - 'IMPORTE A PAGAR CTA. CTE.'
+            - 350.50
     CLIENTS:
       type: object
       properties:
@@ -1118,99 +1120,94 @@ components:
     FILES:
       type: object
       properties:
-        ExpNro:
+        fileCode:
           type: string
           description: EXPEDIENTE
           examples:
             - '00054'
-        nomBen:
+        fileBeneficiaries:
           type: string
           description: Beneficiarios
           examples:
             - 'fdf'
-        expStcli:
+        clientStatus:
           type: string
           description: STATUS DEL CLIENTE
           examples:
             - ''
-        fchSal:
+        fileStartService:
           type: string
           format: date-time
           description: INI SERVICIOS
           examples:
             - 2023-10-25T10:00:00Z
-        fchFin:
+        fileEndService:
           type: string
           format: date-time
           description: FIN SERVICIOS
           examples:
             - 2024-10-25T10:00:00Z
-        expObs:
+        fileObservations:
           type: string
           description: OBSERVACIONES
           examples:
             - 'Empty'
-        expMnd:
+        fileCurrency:
           type: string
           description: MONEDA
           examples:
             - 'Empty'
-        xpvTtot:
+        fileTotalSale:
           type: number
           description: VENTA TOTAL
           examples:
             - 1234
-        sdoCta:
+        accountBalance:
           type: number
           description: SALDO CTA. CORRIENTE
           examples:
             - 1234
-        fileCli:
+        fileCustomer:
           type: string
           description: FILE DEL CLIENTE
           examples:
             - '1234'
-        tarjeta:
+        card:
           type: number
           description: TARJETA
           examples:
             - 1234
-        xtotCob:
+        totalRecoveredCurrencyFile:
           type: number
           description: Tot.Cob.en Mnd Exp
           examples:
             - 1234
-        expFch:
+        fileDate:
           type: string
           format: date-time
           description: FECHA
           examples:
             - 2023-10-25T10:00:00Z
-        expDst:
+        fileDestination:
           type: string
           description: DESTINO
           examples:
             - 'Destino'
-        canMay:
+        fileAmountMajorPax:
           type: number
           description: Cant.Pax mayores
           examples:
             - 1234
-        canMen:
+        FileAmountMinorPax:
           type: number
           description: Cant.Pax menores
           examples:
             - 1234
-        canInf:
+        fileAmountPaxInfo:
           type: number
           description: Cant.Pax infoa
           examples:
             - 1234
-        stcLiva:
-          type: string
-          description: STATUS DEL CLIENTE
-          examples:
-            - 'empty'
   securitySchemes:
   # 1. Definición de la API Key (el clicod)
     ApiKeyAuth:
