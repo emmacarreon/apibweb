@@ -463,104 +463,104 @@ components:
     INVOICES:
       type: object
       properties:
-        sfcCod:
+        boucherCode:
           type: string
           description: COMPROBANTE
           examples:
             - 'COMPROBANTE'
-        sfcNro:
+        internalBoucherCode:
           type: string
           description: NUMERO DE COMPROBANTE
           examples:
             - 'NUMERO DE COMPROBANTE'
-        proCod:
+        productCode:
           type: string
           description: CODIGO DE PROVEEDOR
           examples:
             - 'CODIGO DE PROVEEDOR'
-        cliCod:
+        clientCode:
           type: string
           description: CODIGO DE CLIENTE
           examples:
             - 'CODIGO DE CLIENTE'
-        cliFac:
+        customerToInvoice:
           type: string
           description: CLIENTE A FACTURAR
           examples:
             - 'CLIENTE A FACTURAR'
-        expNro:
+        expNumber:
           type: string
           description: NUMERO DE EXPEDIENTE
           examples:
             - 'NUMERO DE EXPEDIENTE'
-        paxNro:
+        paxNumber:
           type: string
           description: CODIGO DE PASAJERO
           examples:
             - 'CODIGO DE PASAJERO'
-        sfcNom:
+        recipientName:
           type: string
           description: NOMBRE DE DESTINATARIO
           examples:
             - 'JUAN'
-        sfcDir:
+        address:
           type: string
           description: DIRECCION
           examples:
             - 'JUAN'
-        sfcCp:
+        postalCode:
           type: string
           description: CODIGO POSTAL
           examples:
             - 'C.P'
-        sfcLoc:
+        locality:
           type: string
           description: LOCALIDAD
           examples:
             - 'LOCALIDAD'
-        sfcPrv:
+        province:
           type: string
           description: PROVINCIA
           examples:
             - 'PROVINCIA'
-        sfcPai:
+        country:
           type: string
           description: País
           examples:
             - 'PAÍS'
-        sfcDoc:
+        documentCode:
           type: string
           description: CÓDIGO DE DOCUMENTO
           examples:
             - 'CÓDIGO DE DOCUMENTO'
-        sfcGan:
+        cuitNro:
           type: string
           description: Nro de cuit
           examples:
             - 'Nro de cuit'
-        sfcFch:
+        invoiceDate:
           type: string
           format: date-time
           description: FECHA DE FACTURA
           examples:
             - 2023-10-25T10:00:00Z
-        sfcVto:
+        expirationDate:
           type: string
           format: date-time
           description: FECHA DE VENCIMIENTO
           examples:
             - 2023-10-25T10:00:00Z
-        conTpo:
+        accountingCode:
           type: string
           description: CODIGO DE CONTABILIDAD
           examples:
             - 'CODIGO DE CONTABILIDAD'
-        sfcCmb:
+        exchangeToPesos:
           type: number
           description: CAMBIO A PESOS
           examples:
             - 350.50
-        sfcImp:
+        amountTopayCCte:
           type: number
           description: IMPORTE A PAGAR CTA. CTE.
           examples:
