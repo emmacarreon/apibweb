@@ -19,6 +19,9 @@ info:
     independiente siendo entonces un cliente de la agencia y a su vez le venda a
     terceros. VStour le permite almacenar esos terceros como clientes de si
     mismo.  
+servers:
+  - url: https://bw.vstour.com/_ar/desa/vstourApiBW/api1
+    description: Servidor de Desarrollo
 tags:
   - name: third-Parties
     description: para revendedores, sus clientes
@@ -191,7 +194,28 @@ paths:
           description: Ha ocurrido al eliminar
         '404':
           description: third-Parties not found
-  /passengers/{ClientId}:
+  /passengers:
+    get:
+      tags:
+        - passengers
+      summary: Obtiene la lista de pasajeros asociados al usuario del cliente logueado
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
+      description: devuelve los datos de un cliente
+      operationId: getPassengersByClient
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PASSENGERS'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Passengers not found
+  /passenger/{PaxId}:
     get:
       tags:
         - passengers
@@ -202,7 +226,7 @@ paths:
       description: devuelve los datos de un cliente
       operationId: getPassengersByClient
       parameters:
-        - name: ClientId
+        - name: PaxId
           in: path
           description: ID del cliente a devolver
           required: true
@@ -216,11 +240,92 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PASSENGERS'
+                $ref: '#/components/schemas/PASSENGER'
         '400':
           description: Invalid ID supplied
         '404':
-          description: Passengers not found
+          description: Passenger not found
+  /provinces:
+    get:
+      tags:
+        - provinces
+      summary: Obtiene listado de provincias
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      description: devuelve provincias
+      operationId: getProvinces
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PROVINCES'
+        '400':
+          description: error
+        '404':
+          description: Provinces not found
+  /countries:
+    get:
+      tags:
+        - countries
+      summary: Obtiene listado de Paises 
+      security:
+          - ApiKeyAuth: []
+          - BearerAuth: []
+      operationId: countries
+      responses:
+        '200':
+          description: succesfull operation
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/COUNTRIES'
+        '400':
+          description: bad request
+        '404':
+          description: countries not found
+  /doctypes:
+    get:
+      tags:
+        - doctypes
+      summary: obtiene tipos de documentos
+      security:
+          - ApiKeyAuth: []
+          - BearerAuth: []
+      operationId: doctypes
+      responses:
+        '200':
+          description: succesfull operation
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/DOCTYPES'
+        '400':
+          description: bad request
+        '404':
+          description: doctypes not found
+  /nationality:
+    get:
+      tags:
+        - nationality
+      summary: obtiene las nacionalidades
+      security:
+          - ApiKeyAuth: []
+          - BearerAuth: []
+      operationId: nationality
+      responses:
+        '200':
+          description: succesfull operation
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/NATIONALITYS'
+        '400':
+          description: bad request
+        '404':
+          description: doctypes not found
   /files:
     get:
       tags:
@@ -310,30 +415,27 @@ paths:
         '404':
           description: user not found
   /user/login:
-    get:
+    post:
       tags:
         - user
       summary: Logs user into the system
       security:
         - ApiKeyAuth: []
       operationId: loginUser
-      parameters:
-        - name: username
-          in: query
-          description: The user name for login
-          required: true
-          style: form
-          explode: true
-          schema:
-            type: string
-        - name: password
-          in: query
-          description: The password for login in clear text
-          required: true
-          style: form
-          explode: true
-          schema:
-            type: string
+      requestBody:
+        description: Credenciales de acceso del usuario
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "prueba"
+                password:
+                  type: string
+                  example: "prueba"
       responses:
         '200':
           description: successful operation
@@ -351,10 +453,23 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-            application/xml:
-              schema:
-                type: string
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: "AAAAABkrs%2FlK%2B0P64VRlVEsj%2B543vO%2FZ%2B01V2w%3D%3D"
+                  status:
+                    type: object
+                    properties:
+                      cod:
+                        type: string
+                        example: "200"
+                      descrip:
+                        type: string
+                        example: "Ok"
         '400':
           description: Invalid username/password supplied
   /user/logout:
@@ -460,6 +575,90 @@ paths:
           description: User not found
 components:
   schemas:
+    NATIONALITYS:
+      type: object
+      properties:
+        nationalityList:
+          type: array
+          items:
+            $ref: '#/components/schemas/NAT_ITEM'
+
+    NAT_ITEM:
+      type: object
+      properties:
+        cod:
+          type: string
+          description: "Código"
+          example: "ALE"
+        descr:
+          type: string
+          description: "Nombre o descripción del país"
+          example: "ALEMANA"
+        itm:
+          type: string
+          description: "Identificador de tipo de ítem"
+          example: "NAC"
+        value:
+          type: number
+          format: float
+          description: "Valor numérico asociado"
+          example: 0
+    DOCTYPES:
+      type: object
+      properties:
+        doctypeList:
+          type: array
+          items:
+            $ref: '#/components/schemas/DOC_ITEM'
+    DOC_ITEM:
+      type: object
+      properties:
+        cod:
+          type: string
+          description: "Código"
+          example: "CI"
+        descr:
+          type: string
+          description: "Nombre o descripción del país"
+          example: "Cédula de Identidad 00 "
+        itm:
+          type: string
+          description: "Identificador de tipo de ítem"
+          example: "DOC"
+        value:
+          type: number
+          format: float
+          description: "Valor numérico asociado"
+          example: 0
+
+    COUNTRIES:
+        type: object
+        properties:
+          countriesList:
+            type: array
+            items:
+              $ref: '#/components/schemas/COUNTRY_ITEM'
+
+    COUNTRY_ITEM:
+      type: object
+      properties:
+        cod:
+          type: string
+          description: "Código ISO o interno del país"
+          example: "ARG"
+        descr:
+          type: string
+          description: "Nombre o descripción del país"
+          example: "ARGENTINA "
+        itm:
+          type: string
+          description: "Identificador de tipo de ítem"
+          example: "PAI"
+        value:
+          type: number
+          format: float
+          description: "Valor numérico asociado"
+          example: 200.0000
     INVOICES:
       type: object
       properties:
@@ -910,31 +1109,16 @@ components:
     PASSENGER:
       type: object
       properties:
-        paxCustomerCode:
-          type: string
-          description: CLIENTE
-          examples:
-            - '00054'
-        paxCode:
-          type: string
-          description: PASAJERO
-          examples:
-            - 'empty'
-        paxLastName:
-          type: string
-          description: APELLIDO
-          examples:
-            - 'Perez'
         paxFirstName:
           type: string
           description: NOMBRE
           examples:
             - 'Juan'
-        paxName:
+        paxLastName:
           type: string
-          description: APPELIDO Y NOMBRE
+          description: APELLIDO
           examples:
-            - ''
+            - 'Perez'
         paxAdress:
           type: string
           description: DOMICILIO
@@ -950,46 +1134,6 @@ components:
           description: EMAIL
           examples:
             - 'juan@gmail.com'
-        zipCode:
-          type: string
-          description: PASAJERO
-          examples:
-            - 'empty'
-        paxCity:
-          type: string
-          description: LOCALIDAD
-          examples:
-            - 'CABA'
-        stateCode:
-          type: string
-          description: CODIGO DE PROVINCIA
-          examples:
-            - '123'
-        countryCode:
-          type: string
-          description: CODIGO DE PAIS
-          examples:
-            - '345'
-        paxType:
-          type: string
-          description: TIPO
-          examples:
-            - ''
-        paxSpecialService:
-          type: string
-          description: SERVICIOS ESPECIALES
-          examples:
-            - 'empty'
-        paxBirthDate:
-          type: string
-          description: NACIMIENTO
-          examples:
-            - 'empty'
-        paxAniversaryDate:
-          type: string
-          description: FECHA DE ANIVERSARIO
-          examples:
-            - 'empty'
         paxDocument:
           type: string
           description: DOCUMENTO
@@ -1000,114 +1144,9 @@ components:
           description: NUMERO DE DOCUMENTO
           examples:
             - 'empty'
-        paxCountryDocument:
-          type: string
-          description: PAIS EMISOR DE DOCUMENTO
-          examples:
-            - 'empty'
-        paxSecondDocument:
-          type: string
-          description: 2DO DOCUMENTO
-          examples:
-            - 'empty'
-        paxSecondDocumentNro:
-          type: string
-          description: 2DO NRO DOCUMENTO
-          examples:
-            - 'empty'
-        paxCountrySecondDocument:
-          type: string
-          description: 2DO NRO DOCUMENTO
-          examples:
-            - 'empty'
-        paxPassportExpiration2:
-          type: string
-          description: VENCIMIENTO DE PASAPORTE 2
-          examples:
-            - 'empty'
-        paxObservations:
-          type: string
-          description: OBSERVACIONES
-          examples:
-            - 'empty'
-        paxPassportExpiration:
-          type: string
-          description: VENCIMIENTO DE PASAPORTE
-          examples:
-            - 'empty'
-        paxExpirationVisaUsa:
-          type: string
-          description: VENCIMIENTO VISA USA
-          examples:
-            - 'empty'
-        paxGroup:
-          type: string
-          description: GRUPO
-          examples:
-            - 'empty'
         paxNacionality:
           type: string
           description: NACIONALIDAD
-          examples:
-            - 'empty'
-        paxOccupation:
-          type: string
-          description: OCUPACION
-          examples:
-            - 'empty'
-        paxSex:
-          type: string
-          description: SEXO
-          examples:
-            - 'empty'
-        paxNotes:
-          type: string
-          description: NOTAS DEL PASAJERO
-          examples:
-            - 'empty'
-        paxFrequent:
-          type: string
-          description: PASAJERO FRECUENTE
-          examples:
-            - 'empty'
-        paxMemberNumber:
-          type: string
-          description: NUMERO DE SOCIO
-          examples:
-            - 'empty'
-        employeeCode:
-          type: string
-          description: NRO EMPLEADO CORP
-          examples:
-            - 'empty'
-        centerCosts:
-          type: string
-          description: CENTRO DE COSTOS CORP
-          examples:
-            - 'empty'
-        countryResident:
-          type: string
-          description: PAIS RESIDENCIA
-          examples:
-            - 'empty'
-        paxNotActive:
-          type: string
-          description: PAX NO ACTIVO
-          examples:
-            - 'empty'
-        paxExtra:
-          type: string
-          description: EXTRAS
-          examples:
-            - 'empty'
-        paxRelax:
-          type: string
-          description: RELACION CLIENTE-PAX
-          examples:
-            - 'empty'
-        paxRelaVal:
-          type: string
-          description: VALIDACION RELACION
           examples:
             - 'empty'
     PASSENGERS:
@@ -1116,7 +1155,180 @@ components:
         passengersList:
           type: array
           items:
-            $ref: '#/components/schemas/PASSENGER'
+           $ref: '#/components/schemas/PASSENGERS_ITEM'
+    PASSENGERS_ITEM:
+      type: object
+      properties:
+        centerCosts:
+          type: string
+          example: ""
+        countryResident:
+          type: string
+          example: ""
+        employeeCode:
+          type: string
+          example: ""
+        paxAddress:
+          type: string
+          example: ""
+        paxAniversaryDate:
+          type: string
+          format: date
+          example: " "
+        paxBirthDate:
+          type: string
+          format: date
+          example: " "
+        paxCity:
+          type: string
+          example: ""
+        paxCode:
+          type: string
+          example: "00001"
+        paxCountryDocument:
+          type: string
+          example: ""
+        paxCountrySecondDocument:
+          type: string
+          example: ""
+        paxCustomerCode:
+          type: string
+          example: "00090"
+        paxDocument:
+          type: string
+          example: "DNI"
+        paxDocumentNumber:
+          type: string
+          example: "14140767"
+        paxEmail:
+          type: string
+          format: email
+          example: ""
+        paxExpirationVisaUsa:
+          type: string
+          example: " "
+        paxExtra:
+          type: string
+          example: ""
+        paxFirstName:
+          type: string
+          example: "Pepe"
+        paxFrequent:
+          type: boolean
+          example: false
+        paxGroup:
+          type: string
+          example: ""
+        paxLastName:
+          type: string
+          example: "Pepiri"
+        paxMemberNumber:
+          type: string
+          example: ""
+        paxNacionality:
+          type: string
+          example: "ARG"
+        paxName:
+          type: string
+          example: "PEPIRI, PEPE"
+        paxNotActive:
+          type: boolean
+          example: false
+        paxNotes:
+          type: string
+          example: ""
+        paxObservations:
+          type: string
+          example: ""
+        paxOccupation:
+          type: string
+          example: ""
+        paxPassportExpiration:
+          type: string
+          example: " "
+        paxPassportExpiration2:
+          type: string
+          example: " "
+        paxPhone:
+          type: string
+          example: ""
+        paxRelaVal:
+          type: boolean
+          example: false
+        paxRelax:
+          type: string
+          example: ""
+        paxSecondDocument:
+          type: string
+          example: ""
+        paxSecondDocumentNro:
+          type: string
+          example: ""
+        paxSex:
+          type: string
+          example: "M"
+        paxSpecialService:
+          type: string
+          example: ""
+        paxType:
+          type: string
+          example: "A"
+        stateCode:
+          type: string
+          example: ""
+        zipCode:
+          type: string
+          example: ""
+    STATUS:
+        type: object
+        properties:
+          cod:
+            type: string
+            description: "Código de estado de la operación"
+            example: "200"
+          descrip:
+            type: string
+            description: "Mensaje descriptivo del estado"
+            example: "Ok"
+    PROVINCES:
+      type: object
+      properties:
+        provincesList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Province'
+        status:
+            $ref: '#/components/schemas/Status'
+    Province:
+      type: object
+      properties:
+        cod:
+          type: string
+          description: "Código abreviado de la provincia"
+          example: "BUE"
+        descr:
+          type: string
+          description: "Nombre o descripción de la provincia"
+          example: "BUENOS AIRES"
+        itm:
+          type: string
+          description: "Identificador de tipo de ítem"
+          example: "PRV"
+        value:
+          type: number
+          format: double
+          description: "Valor numérico asociado"
+          example: 0.0000
+    
+    Status:
+      type: object
+      properties:
+        cod:
+          type: string
+          example: "200"
+        descrip:
+          type: string
+          example: "Ok"
     FILES:
       type: object
       properties:
@@ -1209,15 +1421,13 @@ components:
           examples:
             - 1234
   securitySchemes:
-  # 1. Definición de la API Key (el clicod)
     ApiKeyAuth:
-      type: apiKey # Indica que es una clave estática
-      in: header   # Indica que debe ir en el Header de la solicitud
-      name: apikey # Nombre del Header que debe contener la clave
+      type: apiKey
+      in: header   
+      name: apikey
       description: La clave API que contiene el identificador del cliente (clicod).
-   # 2. Definición del Token (contiene el contacto logueado)
     BearerAuth:
-      type: http       # Es un esquema de autenticación HTTP
+      type: http
       scheme: bearer   # El tipo de esquema es Bearer (el estándar para tokens)
       bearerFormat: NoCaduca # (Opcional) Nota para indicar que no tiene vencimiento
       description: Token devuelto en el login que identifica al contacto logueado.
